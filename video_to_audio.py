@@ -10,7 +10,7 @@ import sys
 import subprocess
 from pathlib import Path
 
-def convert_video_to_audio(input_file, output_file=None, audio_format="mp3", quality="192k"):
+def convert_video_to_audio(input_file, output_file=None, audio_format="mp3", quality="192k", force_overwrite=False):
     """
     Convert video file to audio format.
     
@@ -19,6 +19,7 @@ def convert_video_to_audio(input_file, output_file=None, audio_format="mp3", qua
         output_file: Path to output audio file (optional)
         audio_format: Audio format (mp3, wav, etc.)
         quality: Audio quality/bitrate
+        force_overwrite: If True, overwrite existing files without asking
     """
     input_path = Path(input_file)
     
@@ -34,11 +35,13 @@ def convert_video_to_audio(input_file, output_file=None, audio_format="mp3", qua
     output_path = Path(output_file)
     
     # Check if output file already exists
-    if output_path.exists():
+    if output_path.exists() and not force_overwrite:
         response = input(f"⚠️  Output file '{output_file}' already exists. Overwrite? (y/N): ")
         if response.lower() != 'y':
             print("❌ Operation cancelled.")
             return False
+    elif output_path.exists() and force_overwrite:
+        print(f"⚠️  Output file '{output_file}' already exists. Overwriting...")
     
     print(f"🎬 Converting '{input_file}' to '{output_file}'...")
     
@@ -81,6 +84,8 @@ def main():
                        help="Output audio format (default: mp3)")
     parser.add_argument("-q", "--quality", default="192k", 
                        help="Audio quality/bitrate (default: 192k)")
+    parser.add_argument("--force", action="store_true", 
+                       help="Overwrite existing files without asking")
     
     args = parser.parse_args()
     
@@ -88,7 +93,8 @@ def main():
         args.input_file, 
         args.output, 
         args.format, 
-        args.quality
+        args.quality,
+        args.force
     )
     
     sys.exit(0 if success else 1)

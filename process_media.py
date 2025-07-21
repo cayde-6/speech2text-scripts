@@ -91,7 +91,8 @@ def main():
             str(input_path),
             "-o", str(audio_file),
             "-f", args.audio_format,
-            "-q", args.audio_quality
+            "-q", args.audio_quality,
+            "--force"  # Automatically overwrite existing files
         ]
         
         if not run_script("video_to_audio.py", video_args):

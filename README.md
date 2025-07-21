@@ -75,8 +75,11 @@ ffmpeg -version
 ### Step 3: Install Python Dependencies
 
 ```bash
-# Install required packages
-pip install openai-whisper pydub[mp3]
+# Option 1: Install from requirements.txt (recommended)
+pip install -r requirements.txt
+
+# Option 2: Install manually
+pip install openai-whisper pydub[mp3] torch torchvision torchaudio
 ```
 
 ## Usage Examples
@@ -100,6 +103,9 @@ python3 video_to_audio.py input.mp4 -o output.mp3
 
 # Convert with different quality and format
 python3 video_to_audio.py input.mp4 -f wav -q 320k
+
+# Force overwrite existing files without prompting
+python3 video_to_audio.py input.mp4 -o output.mp3 --force
 ```
 
 #### Audio Cutting
@@ -208,4 +214,42 @@ output_directory/
     ├── part_001.txt
     ├── part_002.txt
     └── ...
+```
+
+## 🆕 Recent Improvements
+
+### v1.1.0 - Pipeline Automation Fix
+- **Fixed**: Interactive prompt issue in `process_media.py` pipeline
+- **Added**: `--force` flag to `video_to_audio.py` for automatic file overwriting
+- **Improved**: Pipeline now runs completely non-interactively
+- **Enhanced**: Better error handling and user experience
+
+### What was fixed:
+Previously, the pipeline would hang when output files already existed due to interactive "Overwrite? (y/N)" prompts. Now the pipeline automatically overwrites existing files during processing, making it suitable for automated workflows and re-runs.
+
+## 🐛 Troubleshooting
+
+### Pipeline hangs or gets interrupted
+- **Solution**: Update to latest version - this issue has been fixed
+- **Workaround**: Use individual scripts with `--force` flag when needed
+
+### Missing dependencies
+```bash
+# Install missing PyTorch (required for Whisper)
+pip install torch torchvision torchaudio
+
+# Install missing audio processing libraries
+pip install pydub[mp3]
+```
+
+### FFmpeg not found
+```bash
+# macOS
+brew install ffmpeg
+
+# Linux (Ubuntu/Debian)
+sudo apt install ffmpeg
+
+# Verify installation
+ffmpeg -version
 ```
